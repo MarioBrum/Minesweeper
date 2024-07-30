@@ -44,20 +44,33 @@ public class Minesweeper{
 	1,1| 1,2 | 1,3 		x-1,y-1| x-1,y | x-1,y+1 
 	2,1| 2,2 | 2,3		x,y-1  | x,y   | x,y+1
 	3,1| 3,2 | 3,3		x+1,y-1| x+1,y | x+1,y+1
-	*/
-	/*
-	public static int returnAdjacents(int x,int y){
+	*/	
+	public int returnAdjacents(int x,int y){
 		int cont = 0;
+		if(this.board[x][y] == -1){return -1;}
+		if(this.board[x-1][y-1] ==  -1) { cont++;}
+		if(this.board[x][y-1] ==  -1) { cont++;}
+		if(this.board[x+1][y-1] ==  -1) { cont++;}
 		
+		if(this.board[x-1][y] ==  -1) { cont++;}
+		if(this.board[x+1][y] ==  -1) { cont++;}
+		
+		if(this.board[x-1][y+1] ==  -1) { cont++;}
+		if(this.board[x][y+1] ==  -1) { cont++;}
+		if(this.board[x+1][y+1] ==  -1) { cont++;}
+		return cont;
 		
 	}
-	*/
 	public static void main(String [] args){
 		//0 equals nothing
 		//-1 equals bomb
 		Minesweeper mineGame = new Minesweeper(9,9,10);
 		mineGame.createGame();
 		mineGame.printBoard();
+		System.out.println("returnAdjacents 0,0: " + mineGame.returnAdjacents(0,0));
+		System.out.println("returnAdjacents 5,5: " + mineGame.returnAdjacents(5,5));
+		System.out.println("returnAdjacents 8,8: " + mineGame.returnAdjacents(8,8));
+		
 		
 	}
 }
