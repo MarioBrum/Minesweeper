@@ -4,6 +4,7 @@ public class Minesweeper{
 	private int rows;
 	private int columns;
 	private int bombs;
+	private int [][]boardToShow;
 	private Random r;
 	
 	// Construtor da classe
@@ -12,8 +13,15 @@ public class Minesweeper{
         this.columns = columns;
 		this.bombs = bombs;
 		this.r = new Random();
+		this.boardToShow = new int[this.rows][this.columns];
+		for(int i = 0; i < this.rows; i++){
+			for(int j = 0; j < this.columns; j++){
+				boardToShow[i][j] = 0;	
+			}	
+			System.out.println();
+		}
     }
-	
+	//only for test, the main game board with showed bombs
 	public void printBoard(){
 		for(int i = 0; i < this.rows; i++){
 			for(int j = 0; j < this.columns; j++){
@@ -22,6 +30,16 @@ public class Minesweeper{
 			System.out.println();
 		}
 	}
+	
+	public void showBoard(){
+		for(int i = 0; i < this.rows; i++){
+			for(int j = 0; j < this.columns; j++){
+				System.out.print(boardToShow[i][j] + " ");	
+			}	
+			System.out.println();
+		}
+	}
+	
 	public void createGame(){
 		this.board = new int[this.rows][this.columns];
 		int auxBombs = 0;
@@ -48,16 +66,15 @@ public class Minesweeper{
 	public int returnAdjacents(int x,int y){
 		int cont = 0;
 		if(this.board[x][y] == -1){return -1;}
-		if(this.board[x-1][y-1] ==  -1) { cont++;}
-		if(this.board[x][y-1] ==  -1) { cont++;}
-		if(this.board[x+1][y-1] ==  -1) { cont++;}
+		if(x-1 > 0 && y-1 > 0 && this.board[x-1][y-1] ==  -1){cont++;}
+		if(y-1 > 0 && this.board[x][y-1] ==  -1) { cont++;}
+		if(x+1 < this.rows-1 && y-1 > 0 && this.board[x+1][y-1] ==  -1) { cont++;}
+		if(x-1 > 0 && this.board[x-1][y] ==  -1) { cont++;}
+		if(x+1 < this.rows-1 && this.board[x+1][y] ==  -1) { cont++;}
+		if(x-1 > 0 && y+1 < this.columns-1 && this.board[x-1][y+1] ==  -1) { cont++;}
+		if(y+1 < columns-1 && this.board[x][y+1] ==  -1) { cont++;}
+		if(x+1 < rows-1 && y+1 < columns-1 && this.board[x+1][y+1] ==  -1) { cont++;}
 		
-		if(this.board[x-1][y] ==  -1) { cont++;}
-		if(this.board[x+1][y] ==  -1) { cont++;}
-		
-		if(this.board[x-1][y+1] ==  -1) { cont++;}
-		if(this.board[x][y+1] ==  -1) { cont++;}
-		if(this.board[x+1][y+1] ==  -1) { cont++;}
 		return cont;
 		
 	}
@@ -66,10 +83,11 @@ public class Minesweeper{
 		//-1 equals bomb
 		Minesweeper mineGame = new Minesweeper(9,9,10);
 		mineGame.createGame();
-		mineGame.printBoard();
-		System.out.println("returnAdjacents 0,0: " + mineGame.returnAdjacents(0,0));
-		System.out.println("returnAdjacents 5,5: " + mineGame.returnAdjacents(5,5));
-		System.out.println("returnAdjacents 8,8: " + mineGame.returnAdjacents(8,8));
+		//mineGame.printBoard();
+		mineGame.showBoard();
+		//System.out.println("returnAdjacents 0,0: " + mineGame.returnAdjacents(0,0));
+		//System.out.println("returnAdjacents 5,5: " + mineGame.returnAdjacents(5,5));
+		//System.out.println("returnAdjacents 8,8: " + mineGame.returnAdjacents(8,8));
 		
 		
 	}
