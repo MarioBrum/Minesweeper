@@ -1,11 +1,11 @@
 import java.util.Random;
 import java.util.Scanner;
 public class Minesweeper{
-	private int [][]board;
+	private String [][]board;
 	private int rows;
 	private int columns;
 	private int bombs;
-	private int [][]boardToShow;
+	private String [][]boardToShow;
 	private Random r;
 	
 	// Construtor da classe
@@ -14,10 +14,10 @@ public class Minesweeper{
         this.columns = columns;
 		this.bombs = bombs;
 		this.r = new Random();
-		this.boardToShow = new int[this.rows][this.columns];
+		this.boardToShow = new String[this.rows][this.columns];
 		for(int i = 0; i < this.rows; i++){
 			for(int j = 0; j < this.columns; j++){
-				boardToShow[i][j] = 0;	
+				boardToShow[i][j] = "[]";	
 			}	
 			System.out.println();
 		}
@@ -42,16 +42,28 @@ public class Minesweeper{
 	}
 	
 	public void createGame(){
-		this.board = new int[this.rows][this.columns];
+		this.board = new String[this.rows][this.columns];
 		int auxBombs = 0;
 		while(this.bombs > auxBombs){
 			for(int i = 0; i < this.rows; i++){
 				for(int j = 0; j < this.columns; j++){
 					if(r.nextInt(5) == 1){
-						this.board[i][j] = -1;
+						this.board[i][j] = "*";
 						auxBombs++;
 					}	
 				}
+			}
+		}
+		int value;
+		for(int i = 0; i < this.rows; i++){
+			for(int j = 0; j < this.columns; j++){
+				value = returnAdjacents(i, j);
+				if(value == -1){
+					board[i][j] = "*";
+				}
+				else{
+					board[i][j] = " " +String.valueOf(value);
+				}			
 			}
 		}
 	}
@@ -66,35 +78,47 @@ public class Minesweeper{
 	*/	
 	public int returnAdjacents(int x,int y){
 		int cont = 0;
-		if(this.board[x][y] == -1){return -1;}
-		if(x-1 > 0 && y-1 > 0 && this.board[x-1][y-1] ==  -1){cont++;}
-		if(y-1 > 0 && this.board[x][y-1] ==  -1) { cont++;}
-		if(x+1 < this.rows-1 && y-1 > 0 && this.board[x+1][y-1] ==  -1) { cont++;}
-		if(x-1 > 0 && this.board[x-1][y] ==  -1) { cont++;}
-		if(x+1 < this.rows-1 && this.board[x+1][y] ==  -1) { cont++;}
-		if(x-1 > 0 && y+1 < this.columns-1 && this.board[x-1][y+1] ==  -1) { cont++;}
-		if(y+1 < columns-1 && this.board[x][y+1] ==  -1) { cont++;}
-		if(x+1 < rows-1 && y+1 < columns-1 && this.board[x+1][y+1] ==  -1) { cont++;}
+		if(this.board[x][y] == "*"){return -1;}
+		if(x-1 > 0 && y-1 > 0 && this.board[x-1][y-1] ==  "*"){cont++;}
+		if(y-1 > 0 && this.board[x][y-1] ==  "*") { cont++;}
+		if(x+1 < this.rows-1 && y-1 > 0 && this.board[x+1][y-1] ==  "*") { cont++;}
+		if(x-1 > 0 && this.board[x-1][y] ==  "*") { cont++;}
+		if(x+1 < this.rows-1 && this.board[x+1][y] ==  "*") { cont++;}
+		if(x-1 > 0 && y+1 < this.columns-1 && this.board[x-1][y+1] ==  "*") { cont++;}
+		if(y+1 < columns-1 && this.board[x][y+1] ==  "*") { cont++;}
+		if(x+1 < rows-1 && y+1 < columns-1 && this.board[x+1][y+1] ==  "*") { cont++;}
 		
 		return cont;
+		
+	}
+
+	//method to open a board when clicked in a field with no bombs and not adjacent to a bomb
+	public void openAdjacents(int x,int y){
+		if(x-1 > 0 && y-1 > 0 && this.board[x-1][y-1] !=  "*"){openAdjacents(x-1, y-1);}
+		if(y-1 > 0 && this.board[x][y-1] !=  "*") { openAdjacents(x, y-1);}
+		if(x+1 < this.rows-1 && y-1 > 0 && this.board[x+1][y-1] !=  "*") { openAdjacents(x+1, y-1);}
+		if(x-1 > 0 && this.board[x-1][y] !=  "*") { openAdjacents(x-1, y);}
+		if(x+1 < this.rows-1 && this.board[x+1][y] ==  "*") { openAdjacents(x+1, y);}
+		if(x-1 > 0 && y+1 < this.columns-1 && this.board[x-1][y+1] !=  "*") { openAdjacents(x-1, y+1);}
+		if(y+1 < columns-1 && this.board[x][y+1] !=  "*") {openAdjacents(x, y+1);}
+		if(x+1 < rows-1 && y+1 < columns-1 && this.board[x+1][y+1] !=  "*") { openAdjacents(x+1, y+1);}
 		
 	}
 
 	public boolean open(int x,int y){
 		int value = returnAdjacents(x, y);
 		if(value == 0 ){
-
+			openAdjacents(x, y);
 		}
 		if(value == -1){return false;}
 		else{
-			boardToShow[x][y] = value;
+			boardToShow[x][y] = " " + String.valueOf(value);
 			return true;
 		}
 	}
-
 	//visual mechanic to mark a bomb in showed board
 	public void mark(int x,int y){
-		boardToShow[x][y] = 9;
+		boardToShow[x][y] = " P";
 	}
 
 	public static void main(String [] args){
@@ -129,6 +153,8 @@ public class Minesweeper{
 					break;
 			}
 		}
+		System.out.println("You lose!");
+		mineGame.printBoard();
 		//mineGame.printBoard();
 		//System.out.println("returnAdjacents 0,0: " + mineGame.returnAdjacents(0,0));
 		//System.out.println("returnAdjacents 5,5: " + mineGame.returnAdjacents(5,5));
