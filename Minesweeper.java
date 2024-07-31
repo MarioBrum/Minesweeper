@@ -1,4 +1,5 @@
 import java.util.Random;
+import java.util.Scanner;
 public class Minesweeper{
 	private int [][]board;
 	private int rows;
@@ -78,13 +79,57 @@ public class Minesweeper{
 		return cont;
 		
 	}
+
+	public boolean open(int x,int y){
+		int value = returnAdjacents(x, y);
+		if(value == 0 ){
+
+		}
+		if(value == -1){return false;}
+		else{
+			boardToShow[x][y] = value;
+			return true;
+		}
+	}
+
+	//visual mechanic to mark a bomb in showed board
+	public void mark(int x,int y){
+		boardToShow[x][y] = 9;
+	}
+
 	public static void main(String [] args){
 		//0 equals nothing
 		//-1 equals bomb
+		Scanner input = new Scanner(System.in);
+		int x;int y;
 		Minesweeper mineGame = new Minesweeper(9,9,10);
+		boolean gameState = true;
 		mineGame.createGame();
+		while(gameState){
+			mineGame.showBoard();
+			int option = 1;
+			System.out.println("Select a move:\n"
+							+ "1. Open board\n"
+							+ "2. Mark as bomb");
+			option = input.nextInt();
+			System.out.println("Write a coordinate(ex.: 0 4): ");
+			x = input.nextInt();
+			y = input.nextInt();
+			switch (option) {
+				case 1:
+					gameState = mineGame.open(x, y);
+					break;
+				
+				case 2:
+					mineGame.mark(x, y);
+					break;
+			
+				default:
+					System.out.println("Wrong command!!");
+					break;
+			}
+		}
 		//mineGame.printBoard();
-		mineGame.showBoard();
 		//System.out.println("returnAdjacents 0,0: " + mineGame.returnAdjacents(0,0));
 		//System.out.println("returnAdjacents 5,5: " + mineGame.returnAdjacents(5,5));
 		//System.out.println("returnAdjacents 8,8: " + mineGame.returnAdjacents(8,8));
