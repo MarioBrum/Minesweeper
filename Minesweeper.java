@@ -35,7 +35,7 @@ public class Minesweeper{
 	public void showBoard(){
 		for(int i = 0; i < this.rows; i++){
 			for(int j = 0; j < this.columns; j++){
-				System.out.print(boardToShow[i][j] + " ");	
+				System.out.print(" " +boardToShow[i][j] + " ");	
 			}	
 			System.out.println();
 		}
@@ -44,16 +44,18 @@ public class Minesweeper{
 	public void createGame(){
 		this.board = new String[this.rows][this.columns];
 		int auxBombs = 0;
-		while(this.bombs > auxBombs){
-			for(int i = 0; i < this.rows; i++){
-				for(int j = 0; j < this.columns; j++){
-					if(r.nextInt(5) == 1){
-						this.board[i][j] = "*";
+		while(bombs > auxBombs){
+			for(int i = 0; i < rows; i++){
+				for(int j = 0; j < columns; j++){
+					if(r.nextInt(5) == 0 && bombs > auxBombs){
+						board[i][j] = "*";
 						auxBombs++;
 					}	
 				}
 			}
 		}
+		printBoard();
+		System.out.println();
 		int value;
 		for(int i = 0; i < this.rows; i++){
 			for(int j = 0; j < this.columns; j++){
@@ -66,6 +68,7 @@ public class Minesweeper{
 				}			
 			}
 		}
+		printBoard();
 	}
 
 	//return -1 if is a bomb
@@ -79,29 +82,31 @@ public class Minesweeper{
 	public int returnAdjacents(int x,int y){
 		int cont = 0;
 		if(this.board[x][y] == "*"){return -1;}
-		if(x-1 > 0 && y-1 > 0 && this.board[x-1][y-1] ==  "*"){cont++;}
-		if(y-1 > 0 && this.board[x][y-1] ==  "*") { cont++;}
-		if(x+1 < this.rows-1 && y-1 > 0 && this.board[x+1][y-1] ==  "*") { cont++;}
-		if(x-1 > 0 && this.board[x-1][y] ==  "*") { cont++;}
-		if(x+1 < this.rows-1 && this.board[x+1][y] ==  "*") { cont++;}
-		if(x-1 > 0 && y+1 < this.columns-1 && this.board[x-1][y+1] ==  "*") { cont++;}
-		if(y+1 < columns-1 && this.board[x][y+1] ==  "*") { cont++;}
-		if(x+1 < rows-1 && y+1 < columns-1 && this.board[x+1][y+1] ==  "*") { cont++;}
+		if(x-1 >= 0 && y-1 >= 0 && this.board[x-1][y-1] ==  "*"){cont++;}
+		if(y-1 >= 0 && this.board[x][y-1] ==  "*") { cont++;}
+		if(x+1 <= this.rows-1 && y-1 >= 0 && this.board[x+1][y-1] ==  "*") { cont++;}
+		if(x-1 >= 0 && this.board[x-1][y] ==  "*") { cont++;}
+		if(x+1 <= this.rows-1 && this.board[x+1][y] ==  "*") { cont++;}
+		if(x-1 >= 0 && y+1 <= this.columns-1 && this.board[x-1][y+1] ==  "*") { cont++;}
+		if(y+1 <= columns-1 && this.board[x][y+1] ==  "*") { cont++;}
+		if(x+1 <= rows-1 && y+1 <= columns-1 && this.board[x+1][y+1] ==  "*") { cont++;}
 		
 		return cont;
 		
 	}
 
 	//method to open a board when clicked in a field with no bombs and not adjacent to a bomb
-	public void openAdjacents(int x,int y){
-		if(x-1 > 0 && y-1 > 0 && this.board[x-1][y-1] !=  "*"){openAdjacents(x-1, y-1);}
-		if(y-1 > 0 && this.board[x][y-1] !=  "*") { openAdjacents(x, y-1);}
-		if(x+1 < this.rows-1 && y-1 > 0 && this.board[x+1][y-1] !=  "*") { openAdjacents(x+1, y-1);}
-		if(x-1 > 0 && this.board[x-1][y] !=  "*") { openAdjacents(x-1, y);}
-		if(x+1 < this.rows-1 && this.board[x+1][y] ==  "*") { openAdjacents(x+1, y);}
-		if(x-1 > 0 && y+1 < this.columns-1 && this.board[x-1][y+1] !=  "*") { openAdjacents(x-1, y+1);}
-		if(y+1 < columns-1 && this.board[x][y+1] !=  "*") {openAdjacents(x, y+1);}
-		if(x+1 < rows-1 && y+1 < columns-1 && this.board[x+1][y+1] !=  "*") { openAdjacents(x+1, y+1);}
+	public boolean openAdjacents(int x,int y){
+		boardToShow[x][y] = " 0";
+		if(x-1 >= 0 && y-1 >= 0 && board[x-1][y-1] ==  "0"){openAdjacents(x-1, y-1);}
+		if(y-1 >= 0 && board[x][y-1] ==  "0") { openAdjacents(x, y-1);}
+		if(x+1 <= rows-1 && y-1 > 0 && board[x+1][y-1] ==  "0") { openAdjacents(x+1, y-1);}
+		if(x-1 >= 0 && board[x-1][y] ==  "0") { openAdjacents(x-1, y);}
+		if(x+1 <= rows-1 && board[x+1][y] ==  "*") { openAdjacents(x+1, y);}
+		if(x-1 >= 0 && y+1 <= columns-1 && board[x-1][y+1] ==  "0") { openAdjacents(x-1, y+1);}
+		if(y+1 <= columns-1 && board[x][y+1] ==  "0") {openAdjacents(x, y+1);}
+		if(x+1 <= rows-1 && y+1 <= columns-1 && board[x+1][y+1] ==  "0") { openAdjacents(x+1, y+1);}
+		return True;
 		
 	}
 
@@ -126,7 +131,7 @@ public class Minesweeper{
 		//-1 equals bomb
 		Scanner input = new Scanner(System.in);
 		int x;int y;
-		Minesweeper mineGame = new Minesweeper(9,9,10);
+		Minesweeper mineGame = new Minesweeper(9,9,12);
 		boolean gameState = true;
 		mineGame.createGame();
 		while(gameState){
