@@ -54,7 +54,7 @@ public class Minesweeper{
 				}
 			}
 		}
-		printBoard();
+		//printBoard();
 		System.out.println();
 		int value;
 		for(int i = 0; i < this.rows; i++){
@@ -98,20 +98,46 @@ public class Minesweeper{
 	//method to open a board when clicked in a field with no bombs and not adjacent to a bomb
 	public boolean openAdjacents(int x,int y){
 		boardToShow[x][y] = " 0";
-		if(x-1 >= 0 && y-1 >= 0 && board[x-1][y-1] ==  "0"){openAdjacents(x-1, y-1);}
-		if(y-1 >= 0 && board[x][y-1] ==  "0") { openAdjacents(x, y-1);}
-		if(x+1 <= rows-1 && y-1 > 0 && board[x+1][y-1] ==  "0") { openAdjacents(x+1, y-1);}
-		if(x-1 >= 0 && board[x-1][y] ==  "0") { openAdjacents(x-1, y);}
-		if(x+1 <= rows-1 && board[x+1][y] ==  "*") { openAdjacents(x+1, y);}
-		if(x-1 >= 0 && y+1 <= columns-1 && board[x-1][y+1] ==  "0") { openAdjacents(x-1, y+1);}
-		if(y+1 <= columns-1 && board[x][y+1] ==  "0") {openAdjacents(x, y+1);}
-		if(x+1 <= rows-1 && y+1 <= columns-1 && board[x+1][y+1] ==  "0") { openAdjacents(x+1, y+1);}
-		return True;
+		System.out.println(".board line after board to show: " +  board[x][y]);
+		if(x-1 >= 0 && y-1 >= 0 && board[x-1][y-1] ==  "0"){
+			System.out.println(".board line adjacent: " +  board[x-1][y-1]);
+			openAdjacents(x-1, y-1);
+		}
+		if(y-1 >= 0 && board[x][y-1] ==  "0") {
+			System.out.println(".board line adjacent: " +  board[x][y-1]);
+			openAdjacents(x, y-1);
+		}
+		if(x+1 <= rows-1 && y-1 > 0 && board[x+1][y-1] ==  "0") { 
+			System.out.println(".board line adjacent: " +  board[x+1][y-1]);
+			openAdjacents(x+1, y-1);
+		}
+		if(x-1 >= 0 && board[x-1][y] ==  "0") { 
+			System.out.println(".board line adjacent: " +  board[x-1][y]);
+			openAdjacents(x-1, y);
+		}
+		if(x+1 <= rows-1 && board[x+1][y] ==  "*") { 
+			System.out.println(".board line adjacent: " +  board[x+1][y]);
+			openAdjacents(x+1, y);
+		}
+		if(x-1 >= 0 && y+1 <= columns-1 && board[x-1][y+1] ==  "0") { 
+			System.out.println(".board line adjacent: " +  board[x-1][y+1]);
+			openAdjacents(x-1, y+1);
+		}
+		if(y+1 <= columns-1 && board[x][y+1] ==  "0") {
+			System.out.println(".board line adjacent: " +  board[x][y+1]);
+			openAdjacents(x, y+1);
+		}
+		if(x+1 <= rows-1 && y+1 <= columns-1 && board[x+1][y+1] ==  "0") { 
+			System.out.println(".board line adjacent: " +  board[x+1][y+1]);
+			openAdjacents(x+1, y+1);
+		}
+		return true;
 		
 	}
 
 	public boolean open(int x,int y){
 		int value = returnAdjacents(x, y);
+		//System.out.println("value:" + value);
 		if(value == 0 ){
 			openAdjacents(x, y);
 		}
