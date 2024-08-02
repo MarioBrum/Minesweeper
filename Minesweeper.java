@@ -6,6 +6,7 @@ public class Minesweeper{
 	private int columns;
 	private int bombs;
 	private String [][]boardToShow;
+	private boolean [][]opened;
 	private Random r;
 	
 	// Construtor da classe
@@ -21,6 +22,7 @@ public class Minesweeper{
 			}	
 			System.out.println();
 		}
+		opened = new boolean[rows][columns];
     }
 	//only for test, the main game board with showed bombs
 	public void printBoard(){
@@ -82,64 +84,44 @@ public class Minesweeper{
 	public int returnAdjacents(int x,int y){
 		int cont = 0;
 		if(this.board[x][y] == "*"){return -1;}
-		if(x-1 >= 0 && y-1 >= 0 && this.board[x-1][y-1] ==  "*"){cont++;}
-		if(y-1 >= 0 && this.board[x][y-1] ==  "*") { cont++;}
-		if(x+1 <= this.rows-1 && y-1 >= 0 && this.board[x+1][y-1] ==  "*") { cont++;}
-		if(x-1 >= 0 && this.board[x-1][y] ==  "*") { cont++;}
-		if(x+1 <= this.rows-1 && this.board[x+1][y] ==  "*") { cont++;}
-		if(x-1 >= 0 && y+1 <= this.columns-1 && this.board[x-1][y+1] ==  "*") { cont++;}
-		if(y+1 <= columns-1 && this.board[x][y+1] ==  "*") { cont++;}
-		if(x+1 <= rows-1 && y+1 <= columns-1 && this.board[x+1][y+1] ==  "*") { cont++;}
+		if(x-1 >= 0 && y-1 >= 0 && this.board[x-1][y-1] == "*"){cont++;}
+		if(y-1 >= 0 && this.board[x][y-1] == "*") { cont++;}
+		if(x+1 <= this.rows-1 && y-1 >= 0 && this.board[x+1][y-1] == "*") { cont++;}
+		if(x-1 >= 0 && this.board[x-1][y] == "*") { cont++;}
+		if(x+1 <= this.rows-1 && this.board[x+1][y] == "*") { cont++;}
+		if(x-1 >= 0 && y+1 <= this.columns-1 && this.board[x-1][y+1] == "*") { cont++;}
+		if(y+1 <= columns-1 && this.board[x][y+1] == "*") { cont++;}
+		if(x+1 <= rows-1 && y+1 <= columns-1 && this.board[x+1][y+1] == "*") { cont++;}
 		
 		return cont;
 		
 	}
 
 	//method to open a board when clicked in a field with no bombs and not adjacent to a bomb
-	public boolean openAdjacents(int x,int y){
-		boardToShow[x][y] = " 0";
-		System.out.println(".board line after board to show: " +  board[x][y]);
-		if(x-1 >= 0 && y-1 >= 0 && board[x-1][y-1] ==  "0"){
-			System.out.println(".board line adjacent: " +  board[x-1][y-1]);
-			openAdjacents(x-1, y-1);
-		}
-		if(y-1 >= 0 && board[x][y-1] ==  "0") {
-			System.out.println(".board line adjacent: " +  board[x][y-1]);
-			openAdjacents(x, y-1);
-		}
-		if(x+1 <= rows-1 && y-1 > 0 && board[x+1][y-1] ==  "0") { 
-			System.out.println(".board line adjacent: " +  board[x+1][y-1]);
-			openAdjacents(x+1, y-1);
-		}
-		if(x-1 >= 0 && board[x-1][y] ==  "0") { 
-			System.out.println(".board line adjacent: " +  board[x-1][y]);
-			openAdjacents(x-1, y);
-		}
-		if(x+1 <= rows-1 && board[x+1][y] ==  "*") { 
-			System.out.println(".board line adjacent: " +  board[x+1][y]);
-			openAdjacents(x+1, y);
-		}
-		if(x-1 >= 0 && y+1 <= columns-1 && board[x-1][y+1] ==  "0") { 
-			System.out.println(".board line adjacent: " +  board[x-1][y+1]);
-			openAdjacents(x-1, y+1);
-		}
-		if(y+1 <= columns-1 && board[x][y+1] ==  "0") {
-			System.out.println(".board line adjacent: " +  board[x][y+1]);
-			openAdjacents(x, y+1);
-		}
-		if(x+1 <= rows-1 && y+1 <= columns-1 && board[x+1][y+1] ==  "0") { 
-			System.out.println(".board line adjacent: " +  board[x+1][y+1]);
-			openAdjacents(x+1, y+1);
-		}
-		return true;
-		
-	}
+	public void openAdjacents(int x, int y) {
+    if (x < 0 || x >= rows || y < 0 || y >= columns || opened[x][y] || !board[x][y].contains("0")) {
+        return;
+    }
+    opened[x][y] = true;
+    boardToShow[x][y] = " 0";
+    for (int dx = -1; dx <= 1; dx++) {
+        for (int dy = -1; dy <= 1; dy++) {
+            if (dx == 0 && dy == 0) continue;          
+            int newX = x + dx;
+            int newY = y + dy;
+            openAdjacents(newX, newY);
+        }
+    }
+}
 
 	public boolean open(int x,int y){
 		int value = returnAdjacents(x, y);
-		//System.out.println("value:" + value);
+		System.out.println("value:" + value);
 		if(value == 0 ){
+			//System.out.println("value before openadjacents:" + value);
+			boardToShow[x][y] = " 0";
 			openAdjacents(x, y);
+			//System.out.println("value after openadjacents:" + value);
 		}
 		if(value == -1){return false;}
 		else{
@@ -149,7 +131,12 @@ public class Minesweeper{
 	}
 	//visual mechanic to mark a bomb in showed board
 	public void mark(int x,int y){
-		boardToShow[x][y] = " P";
+		if(board[x][y].contains("0")){
+			System.out.println("Unnable to mark, already open!!");
+		}
+		else{
+			boardToShow[x][y] = " P";
+		}
 	}
 
 	public static void main(String [] args){
